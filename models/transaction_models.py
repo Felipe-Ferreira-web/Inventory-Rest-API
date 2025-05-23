@@ -34,29 +34,6 @@ class TransactionModel(data.Model):
             'date': self.date   
         }
     
-
-    @classmethod
-    def find_item(cls, item_id):
-        item = cls.query.filter_by(item_id=item_id).first()
-        if item:
-            return item
-        return None
-
-
-    @classmethod
-    def find_owner(cls, owner_id):
-        owner = cls.query.filter_by(owner_id=owner_id).first()
-        if owner:
-            return owner
-        return None
-    
-    @classmethod
-    def find_user(cls, user_id):
-        user = cls.query.filter_by(user_id=user_id).first()
-        if user:
-            return user
-        return None
-    
     
     def update_transaction(self,transaction):
         self.transaction = transaction

@@ -42,32 +42,4 @@ class LoanTransaction(Resource):
     
 
 class DevolutionTransaction(Resource):
-
-
-    def post(self):
-        
-        arguments = reqparse.RequestParser()
-        arguments.add_argument('item_id', type=int, required=True, help="The field 'item_id' can not be left blank")
-        arguments.add_argument('item', type=str, required=True, help="The field 'item' can not be left blank")
-        arguments.add_argument('user_id', type=int, required=True, help="The field 'user_id' can not be left blank")
-        arguments.add_argument('owner_id', type=int, required=True, help="The field 'owner_id' can not be left blank")
-        data = arguments.reqparse.RequestParser()
-
-
-        item = TransactionModel.find_item(data['item_id'])
-        owner = TransactionModel.find_owner(data['owner_id'])
-        user = TransactionModel.find_user(data['user_id'])
-
-        if user != owner:
-            return {"message": "You do not own this item or item_id does not exist"}
-        
-        
-
-            
-
-        
-
-        
-        transaction = TransactionModel(**data)
-        transaction.save_transaction()
-        return {'message': 'Item transfered successfully!'}, 201 # Created
+    ...
