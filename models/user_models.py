@@ -1,16 +1,16 @@
 from sql_alchemy import data
+from sqlalchemy.orm import relationship
 
 
 class UserModel(data.Model):
 
     __tablename__ = 'users'
 
-
     user_id = data.Column(data.Integer, primary_key=True)
     username = data.Column(data.String(20))
     login = data.Column(data.String(40))
     password = data.Column(data.String(40))
-    #loan = data.relationship('LoanModel', backref='user', lazy=True)
+
 
     def __init__(self, username, login, password):
         self.username = username

@@ -17,7 +17,7 @@ jwt = JWTManager(app)
 
 
 @app.before_request
-def creat_data():
+def create_data():
     data.create_all()
 
 
@@ -28,8 +28,6 @@ def verify_blocklist(jwt_header, jwt_payload):
 @jwt.revoked_token_loader
 def invalid_access_token(jwt_header, jwt_payload):
     return jsonify({'message': 'You have been logged out'}) # unauthorized
-
-
 
 
 api.add_resource(Items, '/items')
