@@ -9,15 +9,15 @@ class ItemModel(data.Model):
 
     item_id = data.Column(data.Integer, primary_key=True)
     description = data.Column(data.String(40))
-    disposal = data.Column(data.Boolean, default=True)
-    date = data.Column(data.String(20), default=Time.register_time)
+    is_available = data.Column(data.Boolean, default=True)
+    date = data.Column(data.String(20), default=lambda: Time.register_time()) 
     owner_id = data.Column(data.Integer)
 
 
-    def __init__(self, item_id, description, disposal, owner_id):
+    def __init__(self, item_id, description, is_available, owner_id):
         self.item_id = item_id
         self.description = description
-        self.disposal = disposal
+        self.is_available = is_available
         self.owner_id = owner_id
     
 
@@ -25,7 +25,7 @@ class ItemModel(data.Model):
         return {
             'item_id': self.item_id,
             'description': self.description,
-            'disposal': str(self.disposal),
+            'is_available': self.is_available,
             'date': self.date,
             'owner_id': self.owner_id
         }
@@ -33,7 +33,7 @@ class ItemModel(data.Model):
 
     @classmethod
     def find_item(cls, item_id):
-        item = cls.query.filter_by(item_id=item_id).first() #SELECT * FROM items WHERE item_id = $item_id
+        item = cls.query.filter_by(item_id=item_id).first()
         if item:
             return item
         return None
@@ -44,9 +44,9 @@ class ItemModel(data.Model):
         data.session.commit()
 
 
-    def update_item(self, description, disposal):
+    def update_item(self, description, is_available):
         self.description = description
-        self.disposal = disposal
+        self.is_available = is_available
         self.save_item()
 
 

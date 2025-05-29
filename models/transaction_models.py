@@ -8,24 +8,24 @@ class TransactionModel(data.Model):
     __tablename__ = 'transactions'
 
     transaction_id = data.Column(data.Integer, primary_key=True)
-    date = data.Column(data.String(20), default=Time.register_time) 
+    date = data.Column(data.String(20), default=lambda: Time.register_time())
 
 
-    item_id = data.Column(data.Integer, data.ForeignKey('items.item_id'), nullable=False)
-    from_user_id = data.Column(data.Integer, data.ForeignKey('users.user_id'), nullable=False)
-    to_user_id = data.Column(data.Integer, data.ForeignKey('users.user_id'), nullable=False)
-    disposal = data.Column(data.Boolean, default=True)
+    item_id = data.Column(data.Integer, nullable=False) # Puxa o id do item da tabela items
+    from_user_id = data.Column(data.Integer, data.ForeignKey('users.user_id'), nullable=False) # Puxa o id de um usuario da tabela user
+    to_user_id = data.Column(data.Integer, data.ForeignKey('users.user_id'), nullable=False) # # Puxa o id de um usuario da tabela user
+    is_available = data.Column(data.Boolean, default=True)
 
 
-    from_user = relationship('UserModel', foreign_keys=[from_user_id], backref='sent_transactions')
-    to_user = relationship('UserModel', foreign_keys=[to_user_id], backref='received_transactions')
+    from_user = relationship('UserModel', foreign_keys=[from_user_id], backref='sent_transactions') # Cria a relação da tabela users com o from_user_id
+    to_user = relationship('UserModel', foreign_keys=[to_user_id], backref='received_transactions') # Cria a relação da tabela users com o to_user_id
 
     
-    def __init__(self, item_id, from_user_id, to_user_id, disposal):
+    def __init__(self, item_id, from_user_id, to_user_id, is_available):
        self.item_id = item_id
        self.from_user_id = from_user_id
        self.to_user_id = to_user_id
-       self.disposal = disposal
+       self.is_available = is_available
        
       
     def json(self):
@@ -34,8 +34,8 @@ class TransactionModel(data.Model):
             'item_id': self.item_id,
             'from_user': self.from_user_id,
             'to_user': self.to_user_id,
-            'disposal': str(self.disposal),
-            'date': self.date   
+            'is_available': self.is_available,
+            'date':self.date
         }
     
     
