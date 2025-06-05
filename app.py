@@ -6,7 +6,6 @@ from resourcers.transaction_resourcers import Transactions, LoanTransaction, Dev
 from flask_jwt_extended import JWTManager
 from blacklist import BLACKLIST
 
-
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///data.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -28,7 +27,6 @@ def verify_blocklist(jwt_header, jwt_payload):
 @jwt.revoked_token_loader
 def invalid_access_token(jwt_header, jwt_payload):
     return jsonify({'message': 'You have been logged out'}) # unauthorized
-
 
 api.add_resource(Items, '/items')
 api.add_resource(Item, '/items/<int:item_id>')

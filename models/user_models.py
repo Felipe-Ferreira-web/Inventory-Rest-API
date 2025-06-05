@@ -11,6 +11,8 @@ class UserModel(data.Model):
     login = data.Column(data.String(40))
     password = data.Column(data.String(40))
 
+    sent_transactions = relationship("TransactionModel", foreign_keys='TransactionModel.from_user_id') # Cria relação com a tabela transactions
+    received_transactions = relationship("TransactionModel", foreign_keys='TransactionModel.to_user_id') # Cria relação com a tabela transactions
 
     def __init__(self, username, login, password):
         self.username = username
@@ -26,17 +28,18 @@ class UserModel(data.Model):
         }
     
 
+    # Acha o usuario pelo user_id
     @classmethod
     def find_user(cls, user_id):
-        user = cls.query.filter_by(user_id=user_id).first() #SELECT * FROM users WHERE user_id = $user_id
+        user = cls.query.filter_by(user_id=user_id).first() 
         if user:
             return user
         return None
     
-
+    # Acha o usuario pelo login
     @classmethod
     def find_by_login(cls, login):
-        user = cls.query.filter_by(login=login).first() #SELECT * FROM users WHERE user_id = $user_id
+        user = cls.query.filter_by(login=login).first() 
         if user:
             return user
         return None

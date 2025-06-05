@@ -1,11 +1,12 @@
 from flask_restful import Resource, reqparse
 from models.user_models import UserModel
-from flask_jwt_extended import create_access_token, jwt_required, get_jwt
+from models.transaction_models import TransactionModel
+from flask_jwt_extended import create_access_token, jwt_required, get_jwt, get_jwt_identity
 from secrets import compare_digest
 from blacklist import BLACKLIST
 
-#TODO: usar docstrings em todas as funções e classes
-# (User) classe para manipulação de users já criados
+
+# classe para manipulação de users já criados
 class User(Resource):
 
     # Pega as informações do id do user inserido
@@ -20,19 +21,25 @@ class User(Resource):
     @jwt_required()
     def delete(self, user_id):
         user = UserModel.find_user(user_id)
-
+        user_accessed = int(get_jwt_identity()) # Pega o id do user logado
+        
         # Checa se o user existe
         if not user:
-            return {'message': 'User not found'}, 404 #not founded
+            return {'message': 'User not found'}, 404 #not found
+        
+        # Checa se quem está deletendo o usuario é o próprio usuario logado
+        if user.user_id != user_accessed:
+            return {"message": "You can not delete other users"}, 403 # Forbidden
         
         try:
+            TransactionModel.delete_user_transaction(user_id) # Substitui por null na tabela transactions o id do user deletado
             user.delete_user()
         except:
             return {'message': 'An internal error ocurred trying to delete user.'}, 500 #Internal Server Error
         return {'message': 'user deleted successfully.'}
     
 
-# (UserRegister) classe para criação de users
+# classe para criação de users
 class UserRegister(Resource):
 
     # Cria uma conta com os valores inseridos pelo user
@@ -58,7 +65,7 @@ class UserRegister(Resource):
 
     
 
-# (UserLogin) classe para fazer o login do user já criado
+# classe para fazer o login do user já criado
 class UserLogin(Resource):
 
    @classmethod
@@ -73,12 +80,12 @@ class UserLogin(Resource):
 
         # Checa se a senha e o login inseridos pelo user estão corretos para acessar a conta
         if user and compare_digest(user.password, data['password']):
-           access_token = create_access_token(identity=str(user.user_id))
+           access_token = create_access_token(identity=str(user.user_id)) # Cria o token de acesso pelo id do user
            return {'token_accessed': access_token}, 200 #Ok
         return {'message': 'The username or password is incorrect.'}, 401 # Unauthorized
 
 
-# (UserLogout) classe para sair da conta do user
+# classe para sair da conta do user
 class UserLogout(Resource):
 
     @jwt_required()

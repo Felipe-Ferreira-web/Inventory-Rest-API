@@ -1,5 +1,4 @@
 from sql_alchemy import data
-from sqlalchemy.orm import relationship
 from date import Time
 
 
