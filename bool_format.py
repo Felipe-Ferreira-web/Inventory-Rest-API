@@ -1,21 +1,25 @@
 from werkzeug.exceptions import BadRequest
 
-# Converte uma string para booleano para ser usado nos filtros de pesquisa no get
 def str_to_bool(value):
+    """ Converte uma string ou booleano em um valor booleano.
 
-
-    # Se o valor for booleano, retorna diretamente
+        Parâmetros:
+            value (str | bool): Valor a ser convertido. Pode ser uma string ('true', 'false', '1', '0') ou um booleano True/False.
+    
+        Retorna:
+            bool: O valor booleano correspondente.
+    
+        Levanta:
+            BadRequest: Se o valor não for um booleano ou uma string válida para conversão."""
+    
     if isinstance(value, bool):
         return value
-    
-    # Se for uma string 
+     
     if isinstance(value, str):
 
-        # Converte string minusculas para e verfica se é True
         if value.lower() in ['true', '1']:
             return True
         
-        # Verifica se é False
         elif value.lower() in ['false', '0']:
             return False
         
